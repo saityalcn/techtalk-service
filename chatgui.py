@@ -46,7 +46,7 @@ def predict_class(sentence, model):
     # Eşik değerinin altındaki tahminleri filtreleme işlemi
     p = bow(sentence, words,show_details=False)
     res = model.predict(np.array([p]))[0]
-    ERROR_THRESHOLD = 0.95
+    ERROR_THRESHOLD = 0.70
     results = [[i,r] for i,r in enumerate(res) if r>ERROR_THRESHOLD]
     #  Olasılık değerine göre büyükten küçüğe sırala
     results.sort(key=lambda x: x[1], reverse=True)
@@ -70,3 +70,60 @@ def chatbot_response(msg):
     ints = predict_class(msg, model)
     res = getResponse(ints, intents)
     return res
+
+
+# TKinter kullanarak GUI oluşturma
+import tkinter
+from tkinter import *
+
+
+
+# Kullanıcıdan gelen inputa göre, GUI'ye yanıt verir.
+def send():
+    msg = EntryBox.get("1.0",'end-1c').strip()
+    EntryBox.delete("0.0",END)
+    if msg != '':
+        ChatLog.config(state=NORMAL)
+        ChatLog.insert(END, "Sen:\n" + msg + '\n\n')
+        try:
+            res = chatbot_response(msg)
+        except:
+            res ="Sorry. I can't understand you. Please tell me different way. :("
+        ChatLog.insert(END, "Bot:\n" + res + '\n\n')
+        ChatLog.config(state=DISABLED)
+   
+# Enter tuşuyla girdi almak için.
+def syend(event):
+    send()
+
+base = tkinter.Tk()
+base.geometry("530x530")
+base.title("CHABOT")
+base.bind('<Return>', syend)
+base.resizable(width=FALSE, height=FALSE)
+
+# Pencere oluşturma
+ChatLog = Text(base, bd=0, bg="light blue", height="8", width="50", font="Arial",)
+ChatLog.config(state=DISABLED)
+
+# Scrollbar ekleme
+scrollbar = Scrollbar(base, command=ChatLog.yview)
+ChatLog['yscrollcommand'] = scrollbar.set
+ChatLog.config(wrap=WORD)
+
+# Mesaj göndermek için buton ekleme
+SendButton = Button(base, font=("Verdana",12,'bold'), text="GÖNDER", width="12", height=5,
+                    bd=0, bg="purple", activebackground="#A020F0",fg='#ffffff',
+                    command= send )
+
+# Mesaj girmek için metin kutusu ekleme
+EntryBox = Text(base, bd=0, bg="light blue",width="35", height="7", font="Arial")
+
+
+# Tüm bileşenleri yerleştirme
+scrollbar.place(x=510,y=6, height=386)
+ChatLog.place(x=6,y=6, height=386, width=500)
+EntryBox.place(x=148, y=401, height=90, width=360)      
+SendButton.place(x=1, y=401, height=90)
+
+base.mainloop()

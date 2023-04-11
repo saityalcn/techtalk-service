@@ -40,32 +40,15 @@ least_common_responses = [word for word, count in Counter(responses).items() if 
 def getMostCommonPatterns():
     return most_common_patterns
 
-
 def getLeastCommonPatterns():
-    return least_common_patterns
+    return [least_common_patterns, [Counter(patterns)[word] for word in least_common_patterns]]
 
 def getMostCommonResponses():
     return most_common_responses
 
 def getLeastCommonResponses():
-    return least_common_responses
+    return [least_common_responses, [Counter(responses)[word] for word in least_common_responses]]
 
-# Print results
-print("Most common patterns: ")
-for word, count in most_common_patterns:
-    print(word, count)
-
-print("\nLeast common patterns: ")
-for word in least_common_patterns:
-    print(word)
-
-print("\nMost common responses: ")
-for word, count in most_common_responses:
-    print(word, count)
-
-print("\nLeast common responses: ")
-for word in least_common_responses:
-    print(word)
 
 # Visualize results for patterns and responses
 fig, axs = plt.subplots(2, 2, figsize=(15, 10))

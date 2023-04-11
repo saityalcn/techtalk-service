@@ -17,7 +17,11 @@ def indexRoute():
 @app.route("/chat", methods=['POST'])
 @cross_origin()
 def chatRoute():
-    res = chatbot_response(request.json['message'])
+    try:
+        res = chatbot_response(request.json['message'])
+    except:
+        res ="Sorry. I can't understand you. Please tell me different way. :("
+        
     return  {'res': res}
 
 
